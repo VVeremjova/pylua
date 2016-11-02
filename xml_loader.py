@@ -22,13 +22,22 @@ def get_attribute_structure(structure, attribute_tag):
     # print attribute_tag
     for structure_body in structure:
         param_name = structure_body.tag
-        print param_name
+        # print param_name
         if param_name == attribute_tag:
             _params = structure_body.attrib
-            print '|--|-->', param_name, ' -- ',_params
+            # print '|--|-->', param_name, ' -- ',_params
             _return_structure.append(structure_body)
     return _return_structure
 
+
+def get_attribute_name(structure, attribute):
+    "Return value of attribute"
+    return structure.get(attribute)
+
+
+def get_count(structure):
+    "Return count of elements in structure"
+    return len(structure)
 
 def doc_xpath():
     "Return path to document"

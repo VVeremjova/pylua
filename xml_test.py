@@ -24,6 +24,7 @@ print root
 #     print name
 elems_in_xml = xml_loader.get_attribute_structure(root, 'interface')
 for elem_in_xml in elems_in_xml: # root.iter('interface'):
+    print ('### ',xml_loader.get_attribute_name(elem_in_xml, 'name'))
     elems_in_interface = xml_loader.get_attribute_structure(elem_in_xml, 'function')
     # for elem_in_interface in  elem_in_xml:
     #     # print ' |-->', elem_in_interface 
