@@ -60,7 +60,7 @@ end
 --type of parameter is "Result"
 local function LoadParamsInFunction(param, interface)
   local name = param:attr("name")
-  print(name)
+  -- print(name)
   local p_type = param:attr("type")
   local mandatory = param:attr("mandatory")
   local array = param:attr("array")
@@ -144,9 +144,9 @@ local function LoadEnums(root, dest)
                         (xml_loader.get_attribute_structure
                           (structs[i], 'param')))
           local count_params = xml_loader.get_count(param_values)
-          print(count_params)
+          -- print(count_params)
           for k_it = 0, count_params-1 do
-            param_name, param_data = LoadParamsInFunction(param_values[k_it], first)
+            -- param_name, param_data = LoadParamsInFunction(param_values[k_it], first)
           end
 
           dest.interface[first].struct[name]=temp_func
@@ -218,7 +218,7 @@ end
   result.interface = {}
 
 
-  root = python.asattr(xml_loader.open(filename))
+  root = python.asattr(xml_loader.open_xml(filename))
   if not root then error(filename .. " not found") end
  
   local interfaces = python.asindx(python.asattr

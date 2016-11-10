@@ -1,18 +1,80 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as ET
+import xml.dom.minidom as minidom
+from io import BytesIO
 
 def python_test():
     print "Hello Python!!!"
     pass
 
 
-def open(file_name):
+def open_xml(file_name):
     "Open xml file"
     tree = ET.parse(file_name)
     root = tree.getroot()
     print root
     return root
+    
+def new(file_name):
+    "Create new xml file"
+    xml_file = open(file_name, 'w')
+    # root = ET.Element(file)
+    return xml_file    
+
+
+def prettify(elem):
+    "Return a pretty-printed XML string for the Element."
+    rough_string = ET.tostring(elem, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    return reparsed.toprettyxml(indent="  ")
+
+def test_writing():
+    top = ET.Element('top')
+
+    comment = ET.Comment('Generated for PyMOTW')
+    top.append(comment)
+
+    child = ET.SubElement(top, 'child')
+    child.text = 'This child contains text.'
+
+    child_with_tail = ET.SubElement(top, 'child_with_tail')
+    child_with_tail.text = 'This child has regular text.'
+    child_with_tail.tail = 'And tail text.'
+
+    child_with_entity_ref = ET.SubElement(top, 'child_with_entity_ref')
+    child_with_entity_ref.text = 'This outside'
+
+    child_with_entity_ref2 = ET.SubElement(child_with_tail, 'child_of_subchild')
+    child_with_entity_ref2.text = 'This inside'
+
+    child_with_entity_ref3 = ET.SubElement(child_with_entity_ref2, 'child_of_sub_sub')
+    child_with_entity_ref3.text = 'This inside recursively'
+
+    print prettify(top)
+
+def add_element(parent, text, attributes, text_body):
+    new_child = ET.SubElement(parent, text,attributes)
+    new_child.text = text_body
+    return parent
+
+
+def create_element(file, node_parent, node_children ):
+    "Create new element in xml file"
+    doc = ET.Element(file)
+    node = ET.SubElement(doc, node_parent)
+    node_child = ET.SubElement(node, node_children)
+    # file.insert(2, e)
+
+    et = ET.ElementTree(doc)
+    # f = BytesIO()
+    # f = ET.tostring(et, encoding='UTF-8', xml_declaration=True)
+    f = ET.tostring(et, encoding='UTF-8')
+    reparsed = minidom.parseString(f)
+    print(reparsed.getvalue())
+
+def create_attributes(file, node, attribute):
+    "Add attributes to node"
     pass
 
 def get_attribute_structure(structure, attribute_tag):
@@ -39,21 +101,12 @@ def get_count(structure):
     "Return count of elements in structure"
     return len(structure)
 
-def doc_xpath():
-    "Return path to document"
+
+# xmlReporter.AddMessage("EXPECT_HMIRESPONSE", {["Id"] = tostring(id),["Type"] = "AVALIABLE_RESULT"},data)
+def write_xml(file, content):
+    ""
+    ET.tree.write(file)
     pass
-
-def node_xpath():
-    "path to all structure"
-    pass
-
-
-
-# Functions for get information about elements
-def node_children():
-    pass
-
-
 
 
 # Might be unused
@@ -65,8 +118,21 @@ def unused_functions():
         return node.attrib
         pass
 
+    # Functions for get information about elements
+    def node_children():
+        pass
+
 
     def node_parent():
+        pass
+
+
+    def doc_xpath():
+        "Return path to document"
+        pass
+
+    def node_xpath():
+        "path to all structure"
         pass
 
 
