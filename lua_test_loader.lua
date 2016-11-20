@@ -171,24 +171,56 @@ local function LoadEnums(root, dest)
  end
  
 
-local function LoadFunction( api, dest  )
+local function LoadFunction( root, dest  )
+  local k = 0
   for first, v in pairs (dest.interface) do
-    for _, s in ipairs(v.body:children("function")) do
-      local name = s:attr("name")
-      local msg_type = s:attr("messagetype")
-      local temp_func = {}
-      local temp_param = {}
-      temp_func["name"] = name
-      temp_func["messagetype"] = msg_type
-      for _, item in ipairs(s:children("param")) do
-        param_name, param_data = LoadParamsInFunction(item, first)
-        temp_param[param_name] = param_data
-      end
+    local functions = python.asindx(python.asattr
+                        (xml_loader.get_attribute_structure
+                          (root[k], 'function')))
+    local count = xml_loader.get_count(functions)
+    if count >0 then
+        for i =0, count-1 do 
+          local name  = xml_loader.get_attribute_name(functions[i], 'name')
+          local msg_type  = xml_loader.get_attribute_name(functions[i], 'messagetype')
+          local temp_param = {}
+          local temp_func = {}
+          temp_func["name"] = name
+          temp_func["messagetype"] = msg_type
 
-      temp_func["param"] = temp_param
-      dest.interface[first].type[msg_type].functions[name]=temp_func
-    end
+          local param_values = python.asindx(python.asattr
+                        (xml_loader.get_attribute_structure
+                          (functions[i], 'param')))
+          local count_params = xml_loader.get_count(param_values)
+          -- print(count_params)
+          for k_it = 0, count_params-1 do
+            -- param_name, param_data = LoadParamsInFunction(param_values[k_it], first)
+          end
+
+          dest.interface[first].type[msg_type].functions[name]=temp_func
+        end
+      end
+    k=k+1
   end
+
+  -- for first, v in pairs (dest.interface) do
+  --   for _, s in ipairs(v.body:children("function")) do
+  --     local name = s:attr("name")
+  --     local msg_type = s:attr("messagetype")
+  --     local temp_func = {}
+  --     local temp_param = {}
+  --     temp_func["name"] = name
+  --     temp_func["messagetype"] = msg_type
+  --     for _, item in ipairs(s:children("param")) do
+  --       param_name, param_data = LoadParamsInFunction(item, first)
+  --       temp_param[param_name] = param_data
+  --     end
+
+  --     temp_func["param"] = temp_param
+  --     dest.interface[first].type[msg_type].functions[name]=temp_func
+  --   end
+  -- end
+
+
 end
 
 -- Load interfaces from api. Each function, enum and struct will be 
@@ -226,22 +258,21 @@ end
                         (root, 'interface')))
 
   LoadInterfaces(interfaces, result)
-print("========================1")
+
     -- local _api = xml.open(path)
   LoadEnums(interfaces, result)
   LoadStructs(interfaces, result)
 
-  -- LoadFunction(_api, result)
+  LoadFunction(interfaces, result)
 
-print("========================2")
-  -- print(dump(result))
+  print(dump(result))
   return result
  end
  
 
  --Test loading from HMI API
 
- module.init("HMI_API.xml")
+ module.init("XmlTest.xml")
 
  --Test loading from MobileAPI
  -- module.init("MOBILE_API.xml")

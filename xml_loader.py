@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
-from io import BytesIO
+import io
+# from io import BytesIO
 
 def python_test():
     print "Hello Python!!!"
@@ -28,6 +29,15 @@ def prettify(elem):
     rough_string = ET.tostring(elem, 'utf-8')
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
+
+def create_and_save_xml(file, elem):
+    xml_file = new(file)
+    if isinstance(elem, basestring):
+        xml_file.write(elem)
+    else:
+        xml_file.write(prettify(elem))
+    xml_file.close()
+
 
 def test_writing():
     top = ET.Element('top')
@@ -56,8 +66,20 @@ def test_writing():
 def add_element(parent, text, attributes, text_body):
     new_child = ET.SubElement(parent, text,attributes)
     new_child.text = text_body
-    return parent
+    return new_child
 
+def get_root(name):
+    return ET.Element(name)
+
+def append_element(root, element):
+    root.append(element)
+
+def append_and_save_xml(file, element):
+    xml_file = open(file, 'a')
+    root = ET.Element(xml_file)
+    append_element(root, element)
+    print root
+    xml_file.close()
 
 def create_element(file, node_parent, node_children ):
     "Create new element in xml file"
